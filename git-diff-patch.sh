@@ -9,6 +9,7 @@ shift
 # Default
 CURRENT_BRANCH_NAME=$(git branch | sed -n '/\* /s///p')
 OUTPUT="./patch/"$(date +%Y%m%d)"/"${CURRENT_BRANCH_NAME}
+FILE_NAME=$(date +%Y%m%d-%H%M%S)"_"${CURRENT_BRANCH_NAME}"_diff.patch"
 
 function usage {
     cat <<EOF
@@ -23,20 +24,20 @@ Command:
 Options:
     --branch -b       branch name
     --output -o       output directory
+    --file   -f       file name
 EOF
 }
 
 function exec {
-  FILE_NAME=`date "+%Y%m%d-%H%M%S"`"_"$CURRENT_BRANCH_NAME"_diff.patch"
   DIFF=""
 
-  echo $CURRENT_BRANCH_NAME
-  echo $FILE_NAME
-  if [ ! -e $OUTPUT_DIR ]; then
-    mkdir -p $OUTPUT_DIR
+  echo "current branch : "${CURRENT_BRANCH_NAME}
+  echo "output : "${OUTPUT}"/"${FILE_NAME}
+  if [ ! -e ${OUTPUT} ]; then
+    mkdir -p ${OUTPUT}
   fi
    
-  git diff --no-prefix $DIFF > $OUTPUT_DIR"/"$FILE_NAME
+  git diff --no-prefix ${DIFF} > ${OUTPUT}"/"${FILE_NAME}
 }
 
 
@@ -52,10 +53,16 @@ do
       OUTPUT=${2}
       shift
       ;;
+    --file|-f)
+      FILE_NAME=${2}
+      shift
+      ;;
+  esac
+  shift
 done
 
 # COMMAND
-case ${1} in
+case ${SUB_COMMAND} in
     help)
       usage
       shift
